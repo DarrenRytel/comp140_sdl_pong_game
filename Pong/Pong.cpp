@@ -16,6 +16,8 @@ bool Pong::Init(SDL_Renderer *renderer)
 
 	debugPrinter = new DebugPrinter();
 	debugPrinter->Init(renderer);
+
+	serialinterface = new SerialInterface();
 		
 	return true;
 }
@@ -54,6 +56,13 @@ bool Pong::Update()
 	}
 
 	TheBall.Move();	
+
+	serialinterface->getPositions();
+	int leftposition = serialinterface->getPot1();
+	ThePlayers[0].SetYpos(leftposition);
+
+	int rightposition = serialinterface->getPot2();
+	ThePlayers[1].SetYpos(rightposition);
 
 	return true;
 }
@@ -95,6 +104,10 @@ bool Pong::Draw(SDL_Renderer *renderer)
 
 bool Pong::Shutdown()
 {
+	serialinterface->close();
+
+	delete serialinterface;
+
 	return true;
 }
 
